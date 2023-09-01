@@ -17,7 +17,7 @@ export function Profile(){
         <Form>
           <Avatar>
             <img 
-              src="https://github.com/mbslash.png" 
+              src="https://github.com/matheusborgesdev.png" 
               alt="Imagem do usuário" 
             />
 
