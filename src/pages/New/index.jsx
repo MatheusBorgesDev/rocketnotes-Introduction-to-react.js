@@ -2,28 +2,51 @@ import { useState } from "react";
 import { Container, Form } from "./styles";
 import { Link } from 'react-router-dom'
 
-import { Header } from '../../components/Header'
-import { Input } from '../../components/Input'
 import { TextArea } from '../../components/TextArea'
 import { NoteItem } from '../../components/NoteItem'
 import { Section } from '../../components/Section'
 import { Button } from '../../components/button'
+import { Header } from '../../components/Header'
+import { Input } from '../../components/Input'
+
+import { api } from '../../services/api'
 
 
 export function New(){
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+
   const [links, setLinks] = useState([])
   const [newLink, setNewLink] = useState("")
+
+  const [tags, setTags] = useState([])
+  const [newTag, setNewTag] = useState("")
 
   function handleAddLink(){
     setLinks(prevState => [...prevState, newLink])
 
     setNewLink("")
+
+    console.log(newLink, links)
   }
 
   function handleRemoveLink(deleted){
     setLinks(prevState => prevState.filter(link => link != deleted))
   }
 
+  function handleAddTag(){
+    setTags(prevState => [...prevState, newTag])
+
+    setNewTag("")
+  }
+
+  function handleRemoveTag(deleted){
+    setTags(prevState => prevState.filter(tag => tag !== deleted))
+  }
+
+  async function handleNewNote(){
+    await {}
+  }
 
   return(
     <Container>
@@ -36,8 +59,14 @@ export function New(){
             <Link to="/">Voltar</Link>
           </header>
 
-          <Input placeholder='Título' />
-          <TextArea placeholder='Observações'/>
+          <Input 
+            placeholder='Título' 
+            onChange={e => setTitle(e.target.value)}
+          />
+          <TextArea 
+            placeholder='Observações'
+            onChange={e => setDescription(e.target.value)}
+          />
 
           <Section title='Links úteis'>
             {
@@ -62,8 +91,24 @@ export function New(){
           
           <Section title='Marcadores'>
             <div className="tags">
-              <NoteItem value='react' />
-              <NoteItem placeholder='Nova tag' isNew />
+              {
+                tags && tags.map((tag, index) => (
+                  <NoteItem 
+                    key={String(index)}
+                    value={tag}
+                    onClick={()=> {handleRemoveTag(tag)}}
+                  />
+                
+                ))
+              }
+
+              <NoteItem 
+                isNew
+                placeholder='Nova tag'  
+                onChange={e => setNewTag(e.target.value)}
+                value={newTag}
+                onClick={handleAddTag}
+              />
             </div>
           </Section>
 
