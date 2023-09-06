@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { Container, Form } from "./styles";
 import { Link } from 'react-router-dom'
+import { Container, Form } from "./styles";
+
+import { useNavigate } from "react-router-dom";
 
 import { TextArea } from '../../components/TextArea'
 import { NoteItem } from '../../components/NoteItem'
@@ -21,6 +23,8 @@ export function New(){
 
   const [tags, setTags] = useState([])
   const [newTag, setNewTag] = useState("")
+
+  const navigate = useNavigate()
 
   function handleAddLink(){
     setLinks(prevState => [...prevState, newLink])
@@ -45,7 +49,27 @@ export function New(){
   }
 
   async function handleNewNote(){
-    await {}
+    if(!title){
+      return alert("A nota deve conter um título")
+    }
+
+    if(newLink){
+      return alert("Opss! Tem um link que não foi adicionado. Clique no botão de adicionar ou deixe o campo em branco para continuar")
+    }
+
+    if(newTag){
+      return alert("Opss! Tem uma tag que não foi adicionada. Clique no botão de adicionar ou deixe o campo em branco para continuar")
+    }
+
+    await api.post("/notes", {
+      title,
+      description,
+      tags,
+      links
+    })
+
+    alert("Nota criada com sucesso")
+    navigate("/")
   }
 
   return(
@@ -112,7 +136,10 @@ export function New(){
             </div>
           </Section>
 
-          <Button title='Salvar' />
+          <Button 
+            title='Salvar' 
+            onClick={handleNewNote}
+          />
 
         </Form>
       </main>
